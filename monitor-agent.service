@@ -1,0 +1,13 @@
+[Unit]
+Description=Python Monitoring Agent
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/monitor-agent
+ExecStart=/usr/bin/python3 /opt/monitor-agent/agent.py
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
