@@ -45,11 +45,6 @@ interval = 60
 pip install -r requirements.txt
 ```
 
-2. Запустите сервер:
-```bash
-python main.py
-```
-
 ## API Endpoints
 
 - `POST /api/metrics` - получение метрик от агента
