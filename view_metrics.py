@@ -1,4 +1,4 @@
-from database import SessionLocal, Metrics
+from database import SessionLocal, Metric, Device, User
 from datetime import datetime, timedelta
 import pandas as pd
 
@@ -7,13 +7,17 @@ def get_metrics(hours=24):
     try:
         # Получаем метрики за последние N часов
         time_threshold = datetime.utcnow() - timedelta(hours=hours)
-        metrics = db.query(Metrics).filter(Metrics.timestamp >= time_threshold).all()
+        metrics = db.query(Metric).filter(Metric.timestamp >= time_threshold).all()
         
         # Преобразуем в DataFrame для удобного просмотра
         data = []
         for m in metrics:
+            # Получаем информацию об устройстве
+            device = db.query(Device).filter(Device.id == m.device_id).first()
+            device_name = device.device_id if device else f"Device_{m.device_id}"
+            
             data.append({
-                'device_id': m.device_id,
+                'device_id': device_name,
                 'timestamp': m.timestamp,
                 'cpu_percent': m.cpu_percent,
                 'ram_percent': m.ram_percent,
@@ -38,5 +42,18 @@ def get_metrics(hours=24):
     finally:
         db.close()
 
+def get_devices_info():
+    db = SessionLocal()
+    try:
+        devices = db.query(Device).all()
+        print("\nЗарегистрированные устройства:")
+        for device in devices:
+            user = db.query(User).filter(User.id == device.user_id).first()
+            print(f"- {device.device_name} (ID: {device.device_id}, Владелец: {user.username})")
+            
+    finally:
+        db.close()
+
 if __name__ == "__main__":
+    get_devices_info()
     get_metrics() 
