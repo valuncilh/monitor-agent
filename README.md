@@ -51,8 +51,3 @@ sudo systemctl stop monitor-agent
 # Просмотреть логи агента
 sudo journalctl -u monitor-agent -f
 ```
-
-## API Endpoints
-
-- `POST /api/metrics` - получение метрик от агента
-- `
